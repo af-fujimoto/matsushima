@@ -1,0 +1,31 @@
+{
+  "name": "matsushima",
+  "version": "1.0.0",
+  "description": "Othello",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=development",
+    "start": "webpack-dev-server --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/af-fujimoto/matsushima.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/af-fujimoto/matsushima/issues"
+  },
+  "homepage": "https://github.com/af-fujimoto/matsushima#readme",
+  "devDependencies": {
+    "yarn": "^1.17.3"
+  },
+  "dependencies": {
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.6.2",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0"
+  }
+}
