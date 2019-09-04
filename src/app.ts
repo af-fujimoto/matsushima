@@ -1,3 +1,3 @@
-import Othello from './othello/othello'
+import Othello from './othello'
 
 const ottello: Othello = new Othello(8);
