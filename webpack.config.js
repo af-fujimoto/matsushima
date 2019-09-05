@@ -29,6 +29,7 @@ module.exports = {
             {
                 // 拡張子が.tsで終わるファイルに対して、TypeScriptコンパイラを適用する
                 test:/\.ts$/,
+                exclude: /node_modules/,
                 use: [
                     {
                         loader: 'ts-loader',
