@@ -1,3 +1,4 @@
+import './interface/around_cells_interface'
 import Cell from './cell';
 
 export default class Board {
@@ -9,6 +10,8 @@ export default class Board {
         this._situation = this.createBoard(this._cellLength);
 
         this.initializeBoard(this._cellLength);
+
+        this.setStoneWhite(5, 4);
 
         this.printSituation();
     }
@@ -22,10 +25,12 @@ export default class Board {
         this.setStoneWhite(centerCellPoint - 0, centerCellPoint - 1);
 
         this.setAroundCellsStatus();
-        this.eachCell((cell) => {
-            if (cell.hasStone) {
-                cell.updatePuttable('WHITE');
-                console.log(cell.hasStone)
+        this.eachCell((cell, x, y) => {
+            if (x ===5 && y === 4) {
+                debugger
+            }
+            if (cell.isRelatedHasStoneCell()) {
+                cell.updatePuttable('WHITE')
             }
         });
     }
@@ -35,26 +40,17 @@ export default class Board {
     }
 
     setAroundCellsStatus() {
-        const aroundCells: {
-            top?: Cell,
-            leftTop?: Cell,
-            left?: Cell,
-            leftBottom?: Cell,
-            bottom?: Cell,
-            rightBottom?: Cell,
-            right?: Cell,
-            rightTop?: Cell
-        } = {};
-
         this.eachCell((cell: Cell, x: number, y: number) => {
+            const aroundCells: aroundCells<Cell> = {};
+
             aroundCells.top         = this.getCell(x - 0, y - 1);
-            aroundCells.leftTop     = this.getCell(x + 1, y - 1);
+            aroundCells.leftTop     = this.getCell(x - 1, y - 1);
             aroundCells.left        = this.getCell(x - 1, y - 0);
-            aroundCells.leftBottom  = this.getCell(x + 1, y + 1);
+            aroundCells.leftBottom  = this.getCell(x - 1, y + 1);
             aroundCells.bottom      = this.getCell(x - 0, y + 1);
-            aroundCells.rightBottom = this.getCell(x - 1, y + 1);
-            aroundCells.right       = this.getCell(x - 1, y - 0);
-            aroundCells.rightTop    = this.getCell(x - 1, y - 1);
+            aroundCells.rightBottom = this.getCell(x + 1, y + 1);
+            aroundCells.right       = this.getCell(x + 1, y - 0);
+            aroundCells.rightTop    = this.getCell(x + 1, y - 1);
 
             cell.aroundCells = aroundCells;
         })
@@ -131,6 +127,7 @@ export default class Board {
 
         if (cell) {
             cell.putStoneWhite();
+            this.reverseStones(cell);
         }
     }
 
@@ -139,6 +136,18 @@ export default class Board {
 
         if (cell) {
             cell.putStoneBlack();
+            this.reverseStones(cell);
+        }
+    }
+
+    reverseStones(cell: Cell) {
+        const targetCells:Cell[] = cell.reversibleCells;
+
+        for (let i = 0; i < targetCells.length; i++) {
+            const targetCell: Cell = targetCells[i];
+            if (targetCell) {
+                targetCell.reversibleStone();
+            }
         }
     }
 }
