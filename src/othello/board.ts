@@ -7,30 +7,32 @@ export default class Board {
 
     constructor(cellLength: number) {
         this._cellLength = cellLength;
-        this._situation = this.createBoard(this._cellLength);
+        this._situation = this.createBoard();
 
-        this.initializeBoard(this._cellLength);
+        this.initializeBoard();
 
-        this.setStoneWhite(5, 4);
+        this.putStoneWhite(5, 4);
 
         this.printSituation();
     }
 
-    initializeBoard(cellLength: number) {
+    initializeBoard() {
         const centerCellPoint: number = this._cellLength / 2;
 
-        this.setStoneBlack(centerCellPoint - 0, centerCellPoint - 0);
-        this.setStoneBlack(centerCellPoint - 1, centerCellPoint - 1);
-        this.setStoneWhite(centerCellPoint - 1, centerCellPoint - 0);
-        this.setStoneWhite(centerCellPoint - 0, centerCellPoint - 1);
+        this.putStoneBlack(centerCellPoint - 0, centerCellPoint - 0);
+        this.putStoneBlack(centerCellPoint - 1, centerCellPoint - 1);
+        this.putStoneWhite(centerCellPoint - 1, centerCellPoint - 0);
+        this.putStoneWhite(centerCellPoint - 0, centerCellPoint - 1);
 
         this.setAroundCellsStatus();
-        this.eachCell((cell, x, y) => {
-            if (x ===5 && y === 4) {
-                debugger
-            }
+        this.updateCellsPuttable('WHITE');
+    }
+
+    updateCellsPuttable(color: stoneStatus) {
+        this.eachCell((cell) => {
+            cell.resetPuttable();
             if (cell.isRelatedHasStoneCell()) {
-                cell.updatePuttable('WHITE')
+                cell.updatePuttable(color);
             }
         });
     }
@@ -53,16 +55,16 @@ export default class Board {
             aroundCells.rightTop    = this.getCell(x + 1, y - 1);
 
             cell.aroundCells = aroundCells;
-        })
+        });
     }
 
-    private createBoard(cellLength: number) {
+    private createBoard() {
         const situation: Cell[][] = [];
 
-        for (let i = 0; i < cellLength; i++) {
+        for (let y = 0; y < this._cellLength; y++) {
             const row: Cell[] = [];
 
-            for (let j = 0; j < cellLength; j++) {
+            for (let x = 0; x < this._cellLength; x++) {
                 const cell = new Cell();
                 row.push(cell);
             }
@@ -122,20 +124,19 @@ export default class Board {
         }
     }
 
-    setStoneWhite(x: number, y: number) {
-        const cell: Cell | undefined = this.getCell(x, y);
-
-        if (cell) {
-            cell.putStoneWhite();
-            this.reverseStones(cell);
-        }
+    putStoneWhite(x: number, y: number) {
+        this.setStone('WHITE', x, y);
     }
 
-    setStoneBlack(x: number, y: number) {
+    putStoneBlack(x: number, y: number) {
+        this.setStone('BLACK', x, y);
+    }
+
+    private setStone(color: stoneStatus, x: number, y: number) {
         const cell: Cell | undefined = this.getCell(x, y);
 
         if (cell) {
-            cell.putStoneBlack();
+            cell.setStone(color);
             this.reverseStones(cell);
         }
     }

@@ -8,3 +8,6 @@ interface aroundCells<C> {
     right?: C,
     rightTop?: C
 }
+type stoneStatus = 'WHITE' | 'BLACK' | 'EMPTY';
+type directionKey = keyof aroundCells<any>;
+type directionKeys = directionKey[];

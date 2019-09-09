@@ -1,18 +1,20 @@
 import './interface/around_cells_interface'
 
 export default class Cell {
-    private _status: string;
+    private _status: stoneStatus;
     private _puttable: boolean;
-    private _aroundCells: aroundCells<Cell | undefined>;
+    private _aroundCells: aroundCells<Cell>;
+    private _directionKeys: directionKeys;
     private _reversibleCells: Cell[];
     private _hasStone: boolean;
 
-    constructor() {
-        this._status = 'EMPTY';
+    constructor(stoneColor?: stoneStatus) {
+        this._status = stoneColor ? stoneColor: 'EMPTY';
         this._puttable = false;
         this._aroundCells = {};
+        this._directionKeys = ['top', 'rightTop', 'right', 'rightBottom', 'bottom', 'leftBottom', 'left', 'leftTop'];
         this._reversibleCells = [];
-        this._hasStone = false;
+        this._hasStone = stoneColor !== undefined;
     }
 
     get hasStone() {
@@ -27,24 +29,29 @@ export default class Cell {
         return this._puttable;
     }
 
+    set aroundCells(aroundeCells: aroundCells<Cell>) {
+        this._aroundCells = aroundeCells;
+    }
+
+    get directionKeys() {
+        return this._directionKeys;
+    }
+
     get reversibleCells() {
         return this._reversibleCells;
     }
 
-    updatePuttable(color: string): boolean {
-        this.updateReversibleCells(color, 'top');
-        this.updateReversibleCells(color, 'leftTop');
-        this.updateReversibleCells(color, 'left');
-        this.updateReversibleCells(color, 'leftBottom');
-        this.updateReversibleCells(color, 'bottom');
-        this.updateReversibleCells(color, 'rightBottom');
-        this.updateReversibleCells(color, 'right');
-        this.updateReversibleCells(color, 'rightTop');
+    updatePuttable(color: stoneStatus): boolean {
+        for (let i = 0; i < this._directionKeys.length; i++) {
+            const directionKey = this._directionKeys[i];
+            this.updateReversibleCells(color, directionKey);
+        }
+
         this._puttable = this.reversibleCells.length > 0;
         return this._puttable;
     }
 
-    updateReversibleCells(color: string, direction: keyof aroundCells<Cell>, startCell?: Cell, baseCell?: Cell, reversibleCells?: Cell[]): boolean {
+    updateReversibleCells(color: stoneStatus, direction: directionKey, startCell?: Cell, baseCell?: Cell, reversibleCells?: Cell[]): boolean {
         const _startCell: Cell = startCell ? startCell : this;
         const _baseCell: Cell = baseCell ? baseCell : this;
         const targetCell: Cell | undefined = _baseCell._aroundCells[direction];
@@ -66,23 +73,22 @@ export default class Cell {
         this._reversibleCells = this._reversibleCells.concat(cells);
     }
 
-    set aroundCells(aroundeCells: aroundCells<Cell>) {
-        this._aroundCells = aroundeCells;
+    resetPuttable() {
+        this._reversibleCells = [];
+        this._puttable = false;
     }
 
-    putStoneWhite() {
-        this.setStone('WHITE');
-    }
-
-    putStoneBlack() {
-        this.setStone('BLACK');
+    setStone(color: stoneStatus) {
+        this._status = color;
+        this._hasStone = true;
+        this._puttable = false;
     }
 
     printStatus() {
-        if (this.status === 'EMPTY') {
+        if (this._status === 'EMPTY') {
             return this._puttable ? 'O' : 'X';
         } else {
-            return this.status === 'WHITE' ? 'W' : 'B';
+            return this._status === 'WHITE' ? 'W' : 'B';
         }
     }
 
@@ -102,16 +108,10 @@ export default class Cell {
         return result;
     }
 
-    private setStone(color: string) {
-        this._status = color;
-        this._hasStone = true;
-        this._puttable = false;
-    }
-
     reversibleStone() {
-        if (this._status = 'WHITE') {
+        if (this._status === 'WHITE') {
             this._status = 'BLACK';
-        } else if (this._status = 'BLACK') {
+        } else if (this._status === 'BLACK') {
             this._status = 'WHITE';
         }
 
