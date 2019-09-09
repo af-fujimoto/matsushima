@@ -1,4 +1,3 @@
-import './interface/around_cells_interface'
 import Cell from './cell';
 
 export default class Board {
@@ -13,6 +12,7 @@ export default class Board {
 
         this.putStoneWhite(5, 4);
 
+        this.updateCellsPuttable('BLACK');
         this.printSituation();
     }
 
@@ -28,9 +28,8 @@ export default class Board {
         this.updateCellsPuttable('WHITE');
     }
 
-    updateCellsPuttable(color: stoneStatus) {
+    updateCellsPuttable(color: stoneColor) {
         this.eachCell((cell) => {
-            cell.resetPuttable();
             if (cell.isRelatedHasStoneCell()) {
                 cell.updatePuttable(color);
             }
@@ -132,7 +131,7 @@ export default class Board {
         this.setStone('BLACK', x, y);
     }
 
-    private setStone(color: stoneStatus, x: number, y: number) {
+    private setStone(color: stoneColor, x: number, y: number) {
         const cell: Cell | undefined = this.getCell(x, y);
 
         if (cell) {
@@ -142,12 +141,13 @@ export default class Board {
     }
 
     reverseStones(cell: Cell) {
-        const targetCells:Cell[] = cell.reversibleCells;
+        const targetCells: Cell[] = cell.reversibleCells;
 
         for (let i = 0; i < targetCells.length; i++) {
             const targetCell: Cell = targetCells[i];
+
             if (targetCell) {
-                targetCell.reversibleStone();
+                targetCell.reverseStone();
             }
         }
     }
