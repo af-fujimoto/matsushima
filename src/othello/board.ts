@@ -7,12 +7,8 @@ export default class Board {
     constructor(cellLength: number) {
         this._cellLength = cellLength;
         this._situation = this.createBoard();
-
         this.initializeBoard();
 
-        this.putStoneWhite(5, 4);
-
-        this.updateCellsPuttable('BLACK');
         this.printSituation();
     }
 
@@ -76,10 +72,14 @@ export default class Board {
 
     printSituation() {
         const length: number = this._cellLength;
-        let result: string = '';
+        const rangeAry: number[] = [...Array(length)].map((v, k) => k + 1);
+        let result: string = `  ${rangeAry.join(' ')}\n`;
 
-        this.eachCell((cell, x) => {
-            result += cell.printStatus();
+        this.eachCell((cell, x, y) => {
+            if (x === 0) {
+                result += `${y + 1} `;
+            }
+            result += `${cell.printStatus()} `;
             if (x + 1 === length) {
                 result += '\n';
             }

@@ -6,7 +6,6 @@ export default class Othello {
 
     constructor(cellLength: number) {
         this._board = new Board(cellLength);
-        console.log(this.board);
     }
 
     get board() {
