@@ -3,8 +3,10 @@ import Cell from './cell';
 export default class Board {
     private _situation: Cell[][];
     private _cellLength: number;
+    $el: JQuery<HTMLElement>;
 
-    constructor(cellLength: number) {
+    constructor($wrap: JQuery<HTMLElement>, cellLength: number) {
+        this.$el = $('<div id="board">');
         this._cellLength = cellLength;
         this._situation = this.createBoard();
         this.initializeBoard();

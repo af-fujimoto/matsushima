@@ -1,3 +1,7 @@
+import jquery = require("jquery");
 import Othello from './othello';
 
-const ottello: Othello = new Othello(8);
+const $: JQueryStatic = jquery;
+
+const $app: JQuery<HTMLElement> = $('#app');
+const ottello: Othello = new Othello($app, 8);
