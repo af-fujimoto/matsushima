@@ -1,18 +1,39 @@
+import Base from '../base';
 import Stone from './stone';
 
-export default class Cell {
+export default class Cell extends Base {
+    $el: JQuery<HTMLLIElement>;
+    private _pos: {
+        x: number,
+        y: number
+    };
     private _puttable: boolean;
     private _aroundCells: aroundCells<Cell>;
     private _directionKeys: directionKeys;
     private _reversibleCells: Cell[];
     private _stone: Stone | undefined;
 
-    constructor(stoneColor?: stoneColor) {
-        this._stone = stoneColor ? new Stone(stoneColor) : undefined;
+    constructor($wrap: JQuery<HTMLUListElement>, x: number, y: number, stoneColor?: stoneColor) {
+        super();
+        this.$el = $('<li class="cell" />');
+        this._pos = {
+            x: x,
+            y: y
+        }
+        this._stone = stoneColor ? new Stone(this.$el, stoneColor) : undefined;
         this._puttable = false;
         this._aroundCells = {};
         this._directionKeys = ['top', 'rightTop', 'right', 'rightBottom', 'bottom', 'leftBottom', 'left', 'leftTop'];
         this._reversibleCells = [];
+
+        this.$el.on('click', this, () => {
+            if (this._puttable) {
+                const {x, y}: {x: number, y: number} = this._pos;
+                this.trigger('clickCell', x, y)
+            }
+        });
+
+        $wrap.append(this.$el);
     }
 
     hasStone(): boolean {
@@ -21,6 +42,10 @@ export default class Cell {
 
     status(): (stoneColor | undefined) {
         return this._stone ? this._stone.color() : undefined;
+    }
+
+    get pos() {
+        return this._pos;
     }
 
     get puttable() {
@@ -40,12 +65,19 @@ export default class Cell {
     }
 
     updatePuttable(color: stoneColor): boolean {
-        for (let i = 0; i < this._directionKeys.length; i++) {
-            const directionKey = this._directionKeys[i];
-            this.updateReversibleCells(color, directionKey);
+        if (this.isRelatedHasStoneCell()) {
+            for (let i = 0; i < this._directionKeys.length; i++) {
+                const directionKey = this._directionKeys[i];
+                this.updateReversibleCells(color, directionKey);
+            }
+
+            this._puttable = this._reversibleCells.length > 0;
+        } else {
+            this._reversibleCells = [];
+            this._puttable = false;
         }
 
-        this._puttable = this.reversibleCells.length > 0;
+        this.$el.toggleClass('is-puttable', this._puttable)
         return this._puttable;
     }
 
@@ -78,7 +110,7 @@ export default class Cell {
 
     setStone(color: stoneColor) {
         if (!this._stone) {
-            this._stone = new Stone(color)
+            this._stone = new Stone(this.$el, color)
             this._puttable = false;
         }
     }
