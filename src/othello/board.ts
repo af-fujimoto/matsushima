@@ -1,37 +1,43 @@
+import Base from '../base';
 import Cell from './cell';
 
-export default class Board {
+export default class Board extends Base {
+    $el: JQuery<HTMLElement>;
     private _situation: Cell[][];
     private _cellLength: number;
-    $el: JQuery<HTMLElement>;
 
     constructor($wrap: JQuery<HTMLElement>, cellLength: number) {
+        super();
         this.$el = $('<div id="board">');
         this._cellLength = cellLength;
         this._situation = this.createBoard();
         this.initializeBoard();
 
-        this.printSituation();
+        $wrap.append(this.$el);
     }
 
     initializeBoard() {
         const centerCellPoint: number = this._cellLength / 2;
 
-        this.putStoneBlack(centerCellPoint - 0, centerCellPoint - 0);
-        this.putStoneBlack(centerCellPoint - 1, centerCellPoint - 1);
-        this.putStoneWhite(centerCellPoint - 1, centerCellPoint - 0);
-        this.putStoneWhite(centerCellPoint - 0, centerCellPoint - 1);
+        this.putStoneWhite(centerCellPoint - 0, centerCellPoint - 0);
+        this.putStoneWhite(centerCellPoint - 1, centerCellPoint - 1);
+        this.putStoneBlack(centerCellPoint - 1, centerCellPoint - 0);
+        this.putStoneBlack(centerCellPoint - 0, centerCellPoint - 1);
 
         this.setAroundCellsStatus();
-        this.updateCellsPuttable('WHITE');
+    }
+
+    onClickCell(x: number, y: number): void {
+        this.trigger('clickCell', x, y);
+        console.log(x, y)
     }
 
     updateCellsPuttable(color: stoneColor) {
         this.eachCell((cell) => {
-            if (cell.isRelatedHasStoneCell()) {
-                cell.updatePuttable(color);
-            }
+            cell.updatePuttable(color);
         });
+
+        this.printSituation();
     }
 
     get situation() {
@@ -60,13 +66,18 @@ export default class Board {
 
         for (let y = 0; y < this._cellLength; y++) {
             const row: Cell[] = [];
+            const $row: JQuery<HTMLUListElement> = $('<ul class="row" />');
 
             for (let x = 0; x < this._cellLength; x++) {
-                const cell = new Cell();
+                const cell = new Cell($row, x, y);
                 row.push(cell);
+
+                this.listenTo(cell, 'clickCell', this.onClickCell);
+
             }
 
             situation.push(row);
+            this.$el.append($row);
         }
 
         return situation;
@@ -125,6 +136,9 @@ export default class Board {
         }
     }
 
+    putStone(color: stoneColor, x: number, y: number) {
+        this.setStone(color, x, y);
+    }
     putStoneWhite(x: number, y: number) {
         this.setStone('WHITE', x, y);
     }
