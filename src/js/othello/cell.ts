@@ -3,37 +3,45 @@ import Stone from './stone';
 
 export default class Cell extends Base {
     $el: JQuery<HTMLLIElement>;
+
     private _pos: {
         x: number,
         y: number
     };
+
     private _puttable: boolean;
-    private _aroundCells: aroundCells<Cell>;
+
     private _directionKeys: directionKeys;
+
     private _reversibleCells: Cell[];
+
     private _stone: Stone | undefined;
+
+    aroundCells: aroundCells<Cell>;
 
     constructor($wrap: JQuery<HTMLUListElement>, x: number, y: number, stoneColor?: stoneColor) {
         super();
         this.$el = $('<li class="cell" />');
         this._pos = {
-            x: x,
-            y: y
-        }
+            x,
+            y,
+        };
         this._stone = stoneColor ? new Stone(this.$el, stoneColor) : undefined;
         this._puttable = false;
-        this._aroundCells = {};
+        this.aroundCells = {};
         this._directionKeys = ['top', 'rightTop', 'right', 'rightBottom', 'bottom', 'leftBottom', 'left', 'leftTop'];
         this._reversibleCells = [];
 
-        this.$el.on('click', this, () => {
-            if (this._puttable) {
-                const {x, y}: {x: number, y: number} = this._pos;
-                this.trigger('clickCell', x, y)
-            }
-        });
+        this.$el.on('click', this, this.onClick);
 
         $wrap.append(this.$el);
+    }
+
+    onClick() {
+        if (this._puttable) {
+            const { x, y }: {x: number, y: number} = this._pos;
+            this.trigger('clickCell', x, y);
+        }
     }
 
     hasStone(): boolean {
@@ -52,16 +60,16 @@ export default class Cell extends Base {
         return this._puttable;
     }
 
-    set aroundCells(aroundeCells: aroundCells<Cell>) {
-        this._aroundCells = aroundeCells;
-    }
-
     get directionKeys() {
         return this._directionKeys;
     }
 
     get reversibleCells() {
         return this._reversibleCells;
+    }
+
+    setAroundCells(aroundCells: aroundCells<Cell>) {
+        this.aroundCells = aroundCells;
     }
 
     updatePuttable(color: stoneColor): boolean {
@@ -77,23 +85,30 @@ export default class Cell extends Base {
             this._puttable = false;
         }
 
-        this.$el.toggleClass('is-puttable', this._puttable)
+        this.$el.toggleClass('is-puttable', this._puttable);
         return this._puttable;
     }
 
-    updateReversibleCells(color: stoneColor, direction: directionKey, startCell?: Cell, baseCell?: Cell, reversibleCells?: Cell[]) {
-        const _startCell: Cell = startCell ? startCell : this;
-        const _baseCell: Cell = baseCell ? baseCell : this;
-        const targetCell: Cell | undefined = _baseCell._aroundCells[direction];
-        const _reversibleCells: Cell[] = reversibleCells && reversibleCells.length > 0 ? reversibleCells : [];
+    updateReversibleCells(
+        color: stoneColor,
+        direction: directionKey,
+        newStartCell?: Cell,
+        newBaseCell?: Cell,
+        newReversibleCells?: Cell[],
+    ) {
+        const startCell: Cell = newStartCell || this;
+        const baseCell: Cell = newBaseCell || this;
+        const reversibleCells: Cell[] = newReversibleCells && newReversibleCells.length > 0 ? newReversibleCells : [];
+
+        const targetCell: Cell | undefined = baseCell.aroundCells[direction];
 
         if (targetCell && targetCell.hasStone()) {
             if (targetCell.status() !== color) {
-                _reversibleCells.push(targetCell);
-                this.updateReversibleCells(color, direction, _startCell, targetCell, _reversibleCells);
+                reversibleCells.push(targetCell);
+                this.updateReversibleCells(color, direction, startCell, targetCell, reversibleCells);
             } else if (targetCell.status() === color) {
-                if (_reversibleCells.length > 0) {
-                    _startCell.addReversibleCells(_reversibleCells);
+                if (reversibleCells.length > 0) {
+                    startCell.addReversibleCells(reversibleCells);
                 }
             }
         }
@@ -110,7 +125,7 @@ export default class Cell extends Base {
 
     setStone(color: stoneColor) {
         if (!this._stone) {
-            this._stone = new Stone(this.$el, color)
+            this._stone = new Stone(this.$el, color);
             this._puttable = false;
         }
     }
@@ -118,9 +133,8 @@ export default class Cell extends Base {
     printStatus() {
         if (this.hasStone()) {
             return this.status() === 'BLACK' ? 'B' : 'W';
-        } else {
-            return this._puttable ? 'O' : 'X';
         }
+        return this._puttable ? 'O' : 'X';
     }
 
     isRelatedHasStoneCell(): boolean {
@@ -130,7 +144,7 @@ export default class Cell extends Base {
 
         this.resetPuttable();
 
-        const cells: Cell[] = Object.values(this._aroundCells);
+        const cells: Cell[] = Object.values(this.aroundCells);
         let result: boolean = false;
 
         for (let i = 0; i < cells.length; i++) {
