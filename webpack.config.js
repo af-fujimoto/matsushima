@@ -36,6 +36,48 @@ module.exports = {
                         loader: 'ts-loader',
                     }
                 ]
+            },
+            {
+                test: /\.css$|\.scss$/,
+                exclude: /node_modules/,
+                use: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            url: false,
+                            sourceMap: true,
+                            importLoaders: 2
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            sourceMap: true,
+                            plugins: [
+                                require('autoprefixer')({
+                                    grid: true
+                                })
+                            ]
+                        }
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sourceMap: true
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(gif|png|jpg|eot|wof|woff|woff2|ttf|svg)$/,
+                use: {
+                    loader: "url-loader",
+                    options: {
+                        limit: 100 * 1024, // 100KB以上だったら埋め込まずファイルとして分離する
+                        name: './img/[name].[ext]'
+                    }
+                }
             }
         ]
     },
