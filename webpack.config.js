@@ -57,6 +57,16 @@ module.exports = {
                         }
                     }
                 ]
+            },
+            {
+                test: /\.(gif|png|jpg|eot|wof|woff|woff2|ttf|svg)$/,
+                use: {
+                    loader: "url-loader",
+                    options: {
+                        limit: 100 * 1024, // 100KB以上だったら埋め込まずファイルとして分離する
+                        name: './img/[name].[ext]'
+                    }
+                }
             }
         ]
     },
