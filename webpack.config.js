@@ -27,6 +27,16 @@ module.exports = {
     // モジュールに適用するルールの設定（ここではローダーの設定を行う事が多い）
     module: {
         rules: [
+
+            {
+                enforce: "pre",
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                loader: "eslint-loader",
+                options: {
+                    fix: true
+                }
+            },
             {
                 // 拡張子が.tsで終わるファイルに対して、TypeScriptコンパイラを適用する
                 test:/\.ts$/,
@@ -38,7 +48,7 @@ module.exports = {
                 ]
             },
             {
-                test: /\.css$|\.scss$/,
+                test: /\.scss$/,
                 exclude: /node_modules/,
                 use: [
                     'style-loader',
