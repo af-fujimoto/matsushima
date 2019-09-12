@@ -8,6 +8,11 @@
     "build": "webpack --mode=development",
     "start": "webpack-dev-server --mode=development"
   },
+  "private": true,
+  "browserslist": [
+    "last 2 versions",
+    "ie 9"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/af-fujimoto/matsushima.git"
@@ -23,9 +28,11 @@
   },
   "dependencies": {
     "@types/jquery": "^3.3.31",
+    "autoprefixer": "^9.6.1",
     "css-loader": "^3.2.0",
     "jquery": "^3.4.1",
     "node-sass": "^4.12.0",
+    "postcss-loader": "^3.0.0",
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.0",
     "ts-loader": "^6.0.4",
