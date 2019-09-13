@@ -3,7 +3,9 @@ import Cell from './cell';
 
 export default class Board extends Base {
     $el: JQuery<HTMLElement>;
+
     private _situation: Cell[][];
+
     private _cellLength: number;
 
     constructor($wrap: JQuery<HTMLElement>, cellLength: number) {
@@ -29,7 +31,6 @@ export default class Board extends Base {
 
     onClickCell(x: number, y: number): void {
         this.trigger('clickCell', x, y);
-        console.log(x, y)
     }
 
     updateCellsPuttable(color: stoneColor) {
@@ -48,16 +49,16 @@ export default class Board extends Base {
         this.eachCell((cell: Cell, x: number, y: number) => {
             const aroundCells: aroundCells<Cell> = {};
 
-            aroundCells.top         = this.getCell(x - 0, y - 1);
-            aroundCells.leftTop     = this.getCell(x - 1, y - 1);
-            aroundCells.left        = this.getCell(x - 1, y - 0);
-            aroundCells.leftBottom  = this.getCell(x - 1, y + 1);
-            aroundCells.bottom      = this.getCell(x - 0, y + 1);
+            aroundCells.top = this.getCell(x - 0, y - 1);
+            aroundCells.leftTop = this.getCell(x - 1, y - 1);
+            aroundCells.left = this.getCell(x - 1, y - 0);
+            aroundCells.leftBottom = this.getCell(x - 1, y + 1);
+            aroundCells.bottom = this.getCell(x - 0, y + 1);
             aroundCells.rightBottom = this.getCell(x + 1, y + 1);
-            aroundCells.right       = this.getCell(x + 1, y - 0);
-            aroundCells.rightTop    = this.getCell(x + 1, y - 1);
+            aroundCells.right = this.getCell(x + 1, y - 0);
+            aroundCells.rightTop = this.getCell(x + 1, y - 1);
 
-            cell.aroundCells = aroundCells;
+            cell.setAroundCells(aroundCells);
         });
     }
 
@@ -73,7 +74,6 @@ export default class Board extends Base {
                 row.push(cell);
 
                 this.listenTo(cell, 'clickCell', this.onClickCell);
-
             }
 
             situation.push(row);
@@ -83,7 +83,7 @@ export default class Board extends Base {
         return situation;
     }
 
-    printSituation() {
+    printSituation(): string {
         const length: number = this._cellLength;
         const rangeAry: number[] = [...Array(length)].map((v, k) => k + 1);
         let result: string = `  ${rangeAry.join(' ')}\n`;
@@ -98,7 +98,7 @@ export default class Board extends Base {
             }
         });
 
-        console.log(result);
+        return result;
     }
 
     eachCell(callback: (cell: Cell, x: number, y: number) => any) {
@@ -106,7 +106,7 @@ export default class Board extends Base {
 
         for (let y = 0; y < length; y++) {
             for (let x = 0; x < length; x++) {
-                const cell: Cell | undefined = this.getCell(x, y)
+                const cell: Cell | undefined = this.getCell(x, y);
 
                 if (cell) {
                     callback(cell, x, y);
@@ -131,14 +131,14 @@ export default class Board extends Base {
 
         if (max >= x && x >= min && max >= y && y >= min) {
             return this._situation[y][x];
-        } else {
-            return undefined;
         }
+        return undefined;
     }
 
     putStone(color: stoneColor, x: number, y: number) {
         this.setStone(color, x, y);
     }
+
     putStoneWhite(x: number, y: number) {
         this.setStone('WHITE', x, y);
     }
@@ -166,5 +166,8 @@ export default class Board extends Base {
                 targetCell.reverseStone();
             }
         }
+
+        this.updateCellsPuttable('BLACK');
+        // 白黒それぞれの数値管理を後ほど実装。
     }
 }
