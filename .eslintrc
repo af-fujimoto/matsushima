@@ -1,13 +1,13 @@
 {
     "env": {
         "browser": true,
-        "es6": true
+        "es6": true,
+        "jquery": true
     },
     "extends": [
         "airbnb-base"
     ],
     "globals": {
-        "$": "readonly",
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
     },
