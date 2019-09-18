@@ -1,3 +1,91 @@
+$border-color: #ddd;
+$board-size: 400px;
+$cell-length: 8;
+$cell-border-size: 2px;
+$cell-size: $board-size / 8;
+$cell-color: #242;
+$cell-color-hover: darken($cell-color, 15%);
+$cell-color-active: darken($cell-color, 25%);
+$cell-color-puttable: lighten($cell-color, 15%);
+$stone-border-size: 1px;
+$stone-size: $cell-size - 4px - $stone-border-size * 2;
+$stone-color-white: #fff;
+$stone-color-black: #000;
+$stone-border-color: #ddd;
+
+@mixin square($size) {
+  width: $size;
+  height: $size;
+}
+
+@mixin circle($size) {
+  @include square($size);
+
+  border-radius: $size / 2;
+}
+
 #othello {
   width: 100%;
+
+  #board {
+    @include square($board-size);
+
+    display: table;
+    margin: 20px auto;
+    table-layout: fixed;
+    border-top: $cell-border-size solid $border-color;
+    border-left: $cell-border-size solid $border-color;
+
+    .row {
+      display: table-row;
+      height: $cell-size;
+
+      .cell {
+        @include square($cell-size);
+
+        position: relative;
+        box-sizing: border-box;
+        display: table-cell;
+        background-color: $cell-color;
+        border-right: $cell-border-size solid $border-color;
+        border-bottom: $cell-border-size solid $border-color;
+
+        &:hover {
+          background-color: $cell-color-hover;
+        }
+
+        &:active {
+          background-color: $cell-color-active;
+        }
+
+        &.is-puttable {
+          background-color: $cell-color-puttable;
+        }
+
+        .stone {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          margin: auto;
+        }
+      }
+    }
+
+    .stone {
+      @include circle($stone-size);
+
+      box-sizing: border-box;
+      border: $cell-border-size solid $stone-border-color;
+
+      &.stone-white {
+        background-color: $stone-color-white;
+      }
+
+      &.stone-black {
+        background-color: $stone-color-black;
+      }
+    }
+  }
 }

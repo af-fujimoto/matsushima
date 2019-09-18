@@ -32,7 +32,7 @@ export default class Cell extends Base {
         this._directionKeys = ['top', 'rightTop', 'right', 'rightBottom', 'bottom', 'leftBottom', 'left', 'leftTop'];
         this._reversibleCells = [];
 
-        this.$el.on('click', this, this.onClick);
+        this.$el.on('click', this.onClick.bind(this));
 
         $wrap.append(this.$el);
     }

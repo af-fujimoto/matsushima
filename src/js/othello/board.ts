@@ -167,7 +167,7 @@ export default class Board extends Base {
             }
         }
 
-        this.updateCellsPuttable('BLACK');
+        this.printSituation();
         // 白黒それぞれの数値管理を後ほど実装。
     }
 }

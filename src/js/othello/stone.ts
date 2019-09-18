@@ -21,6 +21,7 @@ export default class Stone extends Base {
 
     reverse() {
         this._isBlack = !this._isBlack;
+        this.toggleStoneClass();
     }
 
     toggleStoneClass() {
