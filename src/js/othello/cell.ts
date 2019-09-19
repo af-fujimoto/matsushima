@@ -39,7 +39,7 @@ export default class Cell extends Base {
 
   onClick() {
     if (this._puttable) {
-      const { x, y }: {x: number, y: number} = this._pos;
+      const {x, y}: {x: number, y: number} = this._pos;
       this.trigger('clickCell', x, y);
     }
   }
