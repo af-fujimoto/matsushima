@@ -7,7 +7,8 @@
     "test": "eslint src -c .eslintrc --ext ts,tsx; exit 0",
     "stylelint": "stylelint --config .stylelintrc './src/**/*.scss' --fix",
     "build": "webpack --mode=development",
-    "start": "webpack-dev-server --mode=development"
+    "start": "webpack-dev-server --mode=development",
+    "clean": "rm -R node_modules/ && yarn"
   },
   "private": true,
   "browserslist": [
@@ -19,7 +20,7 @@
     "url": "git+https://github.com/af-fujimoto/matsushima.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/af-fujimoto/matsushima/issues"
   },
