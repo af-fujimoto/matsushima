@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/af-fujimoto/matsushima.svg?branch=develop)](https://travis-ci.org/af-fujimoto/matsushima)
+
 # Webでオセロするヤーツ
 
 教材用にざかざか作った奴。  
