@@ -1,3 +1,5 @@
+@import 'utils';
+
 $border-color: #ddd;
 $board-size: 400px;
 $cell-length: 8;
@@ -12,17 +14,6 @@ $stone-size: $cell-size - 4px - $stone-border-size * 2;
 $stone-color-white: #fff;
 $stone-color-black: #000;
 $stone-border-color: #ddd;
-
-@mixin square($size) {
-  width: $size;
-  height: $size;
-}
-
-@mixin circle($size) {
-  @include square($size);
-
-  border-radius: $size / 2;
-}
 
 #othello {
   width: 100%;
