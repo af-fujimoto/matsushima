@@ -4,7 +4,7 @@
   "description": "Othello",
   "main": "index.js",
   "scripts": {
-    "test": "eslint src -c .eslintrc --ext ts,tsx; exit 0",
+    "test": "eslint src -c .eslintrc.json --ext ts,tsx; exit 0",
     "stylelint": "stylelint --config .stylelintrc './src/**/*.scss' --fix",
     "build": "webpack --mode=development",
     "start": "webpack-dev-server --mode=development",

@@ -8,7 +8,7 @@ module.exports = {
   // 指定できる値としては、ファイル名の文字列や、それを並べた配列やオブジェクト
   // 下記はオブジェクトとして指定した例
   entry: {
-    bundle: './src/app.ts',
+    bundle: './src/app.tsx',
   },
   devtool: 'inline-source-map',
   output: {
@@ -21,7 +21,7 @@ module.exports = {
   // 例えば「import Foo from './foo'」という記述に対して"foo.ts"という名前のファイルをモジュールとして探す
   // デフォルトは['.js', '.json']
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.tsx', '.js'],
   },
   devServer: {
     // webpack-dev-serverの公開フォルダ
@@ -33,7 +33,7 @@ module.exports = {
 
       {
         enforce: 'pre',
-        test: /\.tsx?$/,
+        test: /\.tsx$/,
         exclude: /node_modules/,
         loader: 'eslint-loader',
         options: {
@@ -42,7 +42,7 @@ module.exports = {
       },
       {
         // 拡張子が.tsで終わるファイルに対して、TypeScriptコンパイラを適用する
-        test: /\.tsx?$/,
+        test: /\.tsx$/,
         exclude: /node_modules/,
         use: [
           {
