@@ -53,6 +53,10 @@ $stone-border-color: #ddd;
           background-color: $cell-color-puttable;
         }
 
+        &.is-reversible-target {
+          background-color: $cell-color-puttable;
+        }
+
         .stone {
           position: absolute;
           top: 0;
@@ -65,17 +69,39 @@ $stone-border-color: #ddd;
     }
 
     .stone {
-      @include circle($stone-size);
+      @include square($stone-size);
 
-      box-sizing: border-box;
-      border: $cell-border-size solid $stone-border-color;
+      transition-duration: 0.5s;
+      transform-style: preserve-3d;
+      transform: rotateZ(90deg);
 
-      &.stone-white {
-        background-color: $stone-color-white;
+      .stone-black,
+      .stone-white {
+        @include circle($stone-size);
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        border: $cell-border-size solid $stone-border-color;
+        transform-origin: center center;
       }
 
-      &.stone-black {
+      .stone-black {
         background-color: $stone-color-black;
+      }
+
+      .stone-white {
+        background-color: $stone-color-white;
+        transform: translateZ(-1px) rotateY(180deg);
+      }
+
+      &.is-show-white {
+        transform: rotateZ(25deg) rotateY(180deg);
+      }
+
+      &.is-show-black {
+        transform: rotateZ(25deg) rotateY(0deg);
       }
     }
   }
